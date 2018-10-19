@@ -2,46 +2,48 @@
 
 Swiss IL Knife is a "Swiss Army Knife" of sorts for IL-generated methods that are faster then their Expression & Reflection counterparts.
 
-# Library in development
+## Library is in development
 
-I'd gladly accept feedback for new IL-generated methods! So far SwissILKnife can wrap entire `MethodInfo`s into a `Func<object, object[], object>`, and create quick getter/setters, but submit an issue if there's something you'd like added!
+New IL-generated methods are gladly accepted! Suggest one by submitting an issue.
+
+Currently, SwissILKnife can wrap `MethodInfo`s into `Func<object, object[], object>`s, and create quick getter/setters.
 
 ## Simple Example
 
 ```cs
 public class SomeClass
 {
-	public string MyProperty { get; set; }
+    public string MyProperty { get; set; }
 }
 
 static class Program
-{a
-	private static Action<object, object> MyPropertySetter;
-	private static PropertyInfo myProperty = typeof(SomeClass)
-												.GetProperty(nameof(SomeClass.MyProperty));
+{
+    private static Action<object, object> MyPropertySetter;
+    private static PropertyInfo myProperty = typeof(SomeClass)
+                                                 .GetProperty(nameof(SomeClass.MyProperty));
 
-	static Program()
-	{
-		MyPropertySetter = SwissILKnife.MemberUtils.GetSetMethod(myProperty);
-	}
+    static Program()
+    {
+        MyPropertySetter = SwissILKnife.MemberUtils.GetSetMethod(myProperty);
+    }
 
-	static void Main(string[] args)
-	{
-		var sClass = new SomeClass();
+    static void Main(string[] args)
+    {
+        var sClass = new SomeClass();
 
-		myProperty.SetValue(sClass, "1234");
-		PrintValueOfMyProperty(sClass); // "1234"
+        // represented as PropReflectionSet in the benchmarks below
+        myProperty.SetValue(sClass, "1234");
+        PrintValueOfMyProperty(sClass); // "1234"
 
-		MyPropertySetter(sClass, "5678");
-		PrintValueOfMyProperty(sClass); // "5678"
-	}
+        // represented as PropInvokeSetViaSwissIL in the benchmarks below
+        MyPropertySetter(sClass, "5678");
+        PrintValueOfMyProperty(sClass); // "5678"
+    }
 
-	private static void PrintValueOfMyProperty(SomeClass sClass)
-		=> Console.WriteLine($"\"{sClass.MyProperty}\"");
+    private static void PrintValueOfMyProperty(SomeClass sClass)
+        => Console.WriteLine($"\"{sClass.MyProperty}\"");
 }
 ```
-
-These both do the same thing, but the SwissIL solution is faster.
 
 *Note: the following benchmark does not account for the time required to generate the SwissIL invoker*
 ```
