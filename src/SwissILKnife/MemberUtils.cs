@@ -48,7 +48,7 @@ namespace SwissILKnife
 
 		public static InvokableReturn GetGetMethod(MemberInfo member)
 		{
-			var dm = new DynamicMethod<InvokableReturn>(string.Empty, Types.Object, Types.OneObjects, member.DeclaringType, true)
+			var dm = new DynamicMethod<InvokableReturn>(string.Empty, TypeOf<object>.Get, Types.OneObjects, member.DeclaringType, true)
 						.GetILGenerator(out var il);
 
 			if (member is PropertyInfo property)

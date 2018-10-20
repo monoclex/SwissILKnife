@@ -24,14 +24,14 @@ namespace SwissILKnife
 			var asm = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("TestAssembly"), AssemblyBuilderAccess.RunAndSave);
 			var mod = asm.DefineDynamicModule("TestModule", "asm.dll", true);
 			var cls = mod.DefineType("SomeClass", TypeAttributes.Public | TypeAttributes.Class);
-			var dm2 = cls.DefineMethod("Test", MethodAttributes.Public, Types.Object, Types.FullyWrappedMethodParameters);
+			var dm2 = cls.DefineMethod("Test", MethodAttributes.Public, TypeOf<object>.Type, Types.FullyWrappedMethodParameters);
 
 			var il2 = dm2.GetILGenerator();
 
 			EmitWrapIL(il2, method);
 #endif
 
-			var dm = new DynamicMethod<FullyWrappedMethod>(string.Empty, Types.Object, Types.FullyWrappedMethodParameters, method.DeclaringType, true)
+			var dm = new DynamicMethod<FullyWrappedMethod>(string.Empty, TypeOf<object>.Get, Types.FullyWrappedMethodParameters, method.DeclaringType, true)
 				.GetILGenerator(out var il);
 
 			EmitWrapIL(il, method);
@@ -71,7 +71,7 @@ namespace SwissILKnife
 				{
 					il.EmitLoadArgument(_one);
 					il.EmitConstantInt(i);
-					il.EmitLoadArrayElement(Types.Object);
+					il.EmitLoadArrayElement(TypeOf<object>.Get);
 				}
 
 				if (param.IsValueType())
@@ -121,7 +121,7 @@ namespace SwissILKnife
 							il.EmitBox(elemType);
 						}
 
-						il.EmitSetArrayElement(Types.Object);
+						il.EmitSetArrayElement(TypeOf<object>.Get);
 
 						localNumber++;
 					}

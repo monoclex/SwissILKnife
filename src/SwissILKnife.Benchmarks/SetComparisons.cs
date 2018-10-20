@@ -78,7 +78,7 @@ namespace SwissILKnife.Benchmarks
 		public void FieldReflectionSet()
 			=> _field.SetValue(this, string.Empty);
 
-		private Action<object, object> SetViaExpression(PropertyInfo info)
+		private static Action<object, object> SetViaExpression(PropertyInfo info)
 		{
 			var setMethodInfo = info.GetSetMethod(true);
 			var instance = Expression.Parameter(typeof(object), "instance");
@@ -89,7 +89,7 @@ namespace SwissILKnife.Benchmarks
 			return Expression.Lambda<Action<object, object>>(Expression.Call(instanceCast, setMethodInfo, valueCast), new ParameterExpression[] { instance, value }).Compile();
 		}
 
-		private Action<object, object> SetViaIL(MethodInfo method)
+		private static Action<object, object> SetViaIL(MethodInfo method)
 		{
 			var dm = new DynamicMethod(method.Name, null, new Type[] {
 				typeof(object), typeof(object)

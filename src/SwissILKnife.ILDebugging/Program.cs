@@ -23,12 +23,9 @@ namespace SwissILKnife.ILDebugging
 		public void WrapsOutFunc()
 		{
 			var args = new object[] { "1234", null };
-
-			//var success = (bool)(MethodWrapper.Wrap(OutFuncExample, true)
-			//	(this, args));
 		}
 
-		private static void Main(string[] args)
+		private static void Main()
 		{
 			new Program().WrapsOutFunc();
 			Console.WriteLine("Saved");
