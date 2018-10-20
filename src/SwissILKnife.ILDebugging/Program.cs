@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using SwissILKnife;
 
 /*
  *			Purpose of this project:
@@ -23,6 +24,8 @@ namespace SwissILKnife.ILDebugging
 		public void WrapsOutFunc()
 		{
 			var args = new object[] { "1234", null };
+
+			MethodWrapper.SaveWrap(OutFuncExample, "asm.dll");
 		}
 
 		private static void Main()

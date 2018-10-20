@@ -1,4 +1,4 @@
-﻿#if DEBUG && (NET45 || NET472)
+﻿#if (NET45 || NET472) && DEBUG
 #define DISKSAVING
 #endif
 
@@ -34,39 +34,31 @@ namespace SwissILKnife
 		/// </code></example>
 		/// <param name="method">The method to wrap</param>
 		/// <returns>A <see cref="FullyWrappedMethod"/> that acts similar to invoking the method</returns>
-		public static FullyWrappedMethod Wrap(MethodInfo method
-#if DISKSAVING
-			, bool saveToDisk = false
-#endif
-			)
+		public static FullyWrappedMethod Wrap(MethodInfo method)
 		{
-#if DISKSAVING
-			var asm = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("TestAssembly"), AssemblyBuilderAccess.RunAndSave);
-			var mod = asm.DefineDynamicModule("TestModule", "asm.dll", true);
-			var cls = mod.DefineType("SomeClass", TypeAttributes.Public | TypeAttributes.Class);
-			var dm2 = cls.DefineMethod("Test", MethodAttributes.Public, TypeOf<object>.Type, Types.FullyWrappedMethodParameters);
-
-			var il2 = dm2.GetILGenerator();
-
-			EmitWrapIL(il2, method);
-#endif
-
 			var dm = new DynamicMethod<FullyWrappedMethod>(string.Empty, TypeOf<object>.Get, Types.FullyWrappedMethodParameters, method.DeclaringType, true)
 				.GetILGenerator(out var il);
 
 			EmitWrapIL(il, method);
 
-#if DISKSAVING
-			if (saveToDisk)
-			{
-				cls.CreateType();
-
-				asm.Save("asm.dll", PortableExecutableKinds.ILOnly, ImageFileMachine.AMD64);
-			}
-#endif
-
 			return dm.CreateDelegate();
 		}
+
+#if DISKSAVING
+		public static void SaveWrap(MethodInfo method, string dllName)
+		{
+			var asm = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("TestAssembly"), AssemblyBuilderAccess.RunAndSave);
+			var mod = asm.DefineDynamicModule("TestModule", "asm.dll", true);
+			var cls = mod.DefineType("SomeClass", TypeAttributes.Public | TypeAttributes.Class);
+			var dm = cls.DefineMethod("Test", MethodAttributes.Public, TypeOf<object>.Get, Types.FullyWrappedMethodParameters);
+			var il = dm.GetILGenerator();
+
+			EmitWrapIL(il, method);
+
+			cls.CreateType();
+			asm.Save(dllName, PortableExecutableKinds.ILOnly, ImageFileMachine.AMD64);
+		}
+#endif
 
 		private static void EmitWrapIL(ILGenerator il, MethodInfo method)
 		{
