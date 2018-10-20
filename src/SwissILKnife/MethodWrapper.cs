@@ -12,8 +12,28 @@ using FullyWrappedMethod = System.Func<object, object[], object>;
 
 namespace SwissILKnife
 {
+	/// <summary>
+	/// Wraps entire <see cref="MethodInfo"/>s into a <see cref="System.Delegate"/>
+	/// </summary>
 	public static class MethodWrapper
 	{
+		/// <summary>Wraps the specified method.</summary>
+		/// <example><code>
+		/// public class Test
+		/// {
+		///		public bool Method(string a, out int b)
+		///			=> int.Tryparse(a, out b);
+		/// }
+		///
+		/// var wrapped = Wrap(typeof(Test).GetMethod(nameof(Test.Method)));
+		///
+		/// var tst = new Test();
+		/// var args = new object[] { "1234", null };
+		/// var result = (bool)wrapped(tst, args);
+		/// var parsedInt = (int)args[1];
+		/// </code></example>
+		/// <param name="method">The method to wrap</param>
+		/// <returns>A <see cref="FullyWrappedMethod"/> that acts similar to invoking the method</returns>
 		public static FullyWrappedMethod Wrap(MethodInfo method
 #if DISKSAVING
 			, bool saveToDisk = false
