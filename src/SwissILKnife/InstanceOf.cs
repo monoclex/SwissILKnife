@@ -18,13 +18,14 @@ namespace SwissILKnife
 		}
 
 		private static readonly Func<T> Constructor;
-
+		
 		public static T Create()
 			=> Constructor();
 	}
-
+	
 	public static class InstanceOf
 	{
+		
 		public static Func<object> GetCreator(Type objType)
 		{
 			var dm = new DynamicMethod<Func<object>>(string.Empty, objType, Types.NoObjects, true)
