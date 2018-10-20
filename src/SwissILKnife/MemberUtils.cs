@@ -1,7 +1,6 @@
 ﻿using StrictEmit;
 
 using System.Reflection;
-using System.Reflection.Emit;
 
 using InstanceInvokable = System.Action<object, object>;
 using InvokableReturn = System.Func<object, object>;
@@ -16,8 +15,8 @@ namespace SwissILKnife
 
 		public static InstanceInvokable GetSetMethod(MemberInfo member)
 		{
-			var dm = new DynamicMethod(string.Empty, Types.Void, Types.TwoObjects, member.DeclaringType, true);
-			var il = dm.GetILGenerator();
+			var dm = new DynamicMethod<InstanceInvokable>(string.Empty, Types.Void, Types.TwoObjects, member.DeclaringType, true)
+						.GetILGenerator(out var il);
 
 			if (member is PropertyInfo property)
 			{
@@ -44,13 +43,13 @@ namespace SwissILKnife
 
 			il.EmitReturn();
 
-			return (InstanceInvokable)dm.CreateDelegate(Types.InstanceInvokable);
+			return dm.CreateDelegate();
 		}
 
 		public static InvokableReturn GetGetMethod(MemberInfo member)
 		{
-			var dm = new DynamicMethod(string.Empty, Types.Object, Types.OneObjects, member.DeclaringType, true);
-			var il = dm.GetILGenerator();
+			var dm = new DynamicMethod<InvokableReturn>(string.Empty, Types.Object, Types.OneObjects, member.DeclaringType, true)
+						.GetILGenerator(out var il);
 
 			if (member is PropertyInfo property)
 			{
@@ -81,7 +80,7 @@ namespace SwissILKnife
 
 			il.EmitReturn();
 
-			return (InvokableReturn)dm.CreateDelegate(Types.InvokableReturn);
+			return dm.CreateDelegate();
 		}
 	}
 }

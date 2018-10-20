@@ -31,8 +31,8 @@ namespace SwissILKnife
 			EmitWrapIL(il2, method);
 #endif
 
-			var dm = new DynamicMethod(string.Empty, Types.Object, Types.FullyWrappedMethodParameters, method.DeclaringType, true);
-			var il = dm.GetILGenerator();
+			var dm = new DynamicMethod<FullyWrappedMethod>(string.Empty, Types.Object, Types.FullyWrappedMethodParameters, method.DeclaringType, true)
+				.GetILGenerator(out var il);
 
 			EmitWrapIL(il, method);
 
@@ -45,7 +45,7 @@ namespace SwissILKnife
 			}
 #endif
 
-			return (FullyWrappedMethod)dm.CreateDelegate(Types.FullyWrappedMethod);
+			return dm.CreateDelegate();
 		}
 
 		private static void EmitWrapIL(ILGenerator il, MethodInfo method)

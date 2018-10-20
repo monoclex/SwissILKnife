@@ -1,7 +1,6 @@
 ﻿using StrictEmit;
 
 using System;
-using System.Reflection.Emit;
 
 namespace SwissILKnife
 {
@@ -9,13 +8,13 @@ namespace SwissILKnife
 	{
 		static InstanceOf()
 		{
-			var dm = new DynamicMethod(string.Empty, typeof(T), Types.NoObjects, true);
-			var il = dm.GetILGenerator();
+			var dm = new DynamicMethod<Func<T>>(string.Empty, typeof(T), Types.NoObjects, true)
+						.GetILGenerator(out var il);
 
 			il.EmitNewObject<T>();
 			il.EmitReturn();
 
-			Constructor = (Func<T>)dm.CreateDelegate(typeof(Func<T>));
+			Constructor = dm.CreateDelegate();
 		}
 
 		private static readonly Func<T> Constructor;
@@ -28,13 +27,13 @@ namespace SwissILKnife
 	{
 		public static Func<object> GetCreator(Type objType)
 		{
-			var dm = new DynamicMethod(string.Empty, objType, Types.NoObjects, true);
-			var il = dm.GetILGenerator();
+			var dm = new DynamicMethod<Func<object>>(string.Empty, objType, Types.NoObjects, true)
+						.GetILGenerator(out var il);
 
 			il.EmitNewObject(objType.GetConstructor(Type.EmptyTypes));
 			il.EmitReturn();
 
-			return (Func<object>)dm.CreateDelegate(typeof(Func<object>));
+			return dm.CreateDelegate();
 		}
 	}
 }
