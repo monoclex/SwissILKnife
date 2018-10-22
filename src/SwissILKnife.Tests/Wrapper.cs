@@ -77,5 +77,34 @@ namespace SwissILKnife.Tests
 
 			Assert.Equal(":)", exec);
 		}
+
+		public readonly MethodInfo OutAndRefFunc =
+			typeof(Wrapper).GetMethod(nameof(OutAndRefWrap));
+
+		public bool OutAndRefWrap(int a, ref string b, out int c)
+		{
+			var integer = int.Parse(b);
+			b = integer.ToString() + " = INT";
+
+			c = a - integer;
+
+			return c > 0;
+		}
+
+		[Fact]
+		public void WrapsOutAndRefWrap()
+		{
+			var args = new object[] { 5, "123", null };
+
+			var exec = MethodWrapper.Wrap(OutAndRefFunc)
+				(this, args);
+
+			var success = (bool)(exec);
+
+			Assert.False(success);
+			Assert.Equal(5, args[0]);
+			Assert.Equal("123 = INT", args[1]);
+			Assert.Equal(5 - 123, args[2]);
+		}
 	}
 }

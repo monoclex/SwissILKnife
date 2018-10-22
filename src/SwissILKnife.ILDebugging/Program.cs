@@ -25,7 +25,7 @@ namespace SwissILKnife.ILDebugging
 		{
 			var args = new object[] { "1234", null };
 
-			MethodWrapper.SaveWrap(OutFuncExample, "asm.dll");
+			// MethodWrapper.SaveWrap(OutFuncExample, "asm.dll");
 		}
 
 		private static void Main()

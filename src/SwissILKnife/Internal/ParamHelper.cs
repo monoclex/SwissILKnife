@@ -11,7 +11,7 @@ namespace SwissILKnife
 		public static bool IsByRef(this ParameterInfo parameterInfo)
 			=> parameterInfo.ParameterType.IsByRef;
 
-		public static bool IsNeedsSetting(this ParameterInfo parameterInfo)
+		public static bool IsOutOrRef(this ParameterInfo parameterInfo)
 			=> parameterInfo.IsOut || parameterInfo.IsByRef();
 
 		public static bool IsValueType(this ParameterInfo parameterInfo)

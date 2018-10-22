@@ -16,7 +16,7 @@ namespace SwissILKnife.Benchmarks
 	{
 		private static void Main()
 		{
-			BenchmarkDotNet.Running.BenchmarkRunner.Run<SetComparisons>();
+			BenchmarkDotNet.Running.BenchmarkRunner.Run<OutWrapBenchmark>();
 			Console.ReadLine();
 		}
 	}

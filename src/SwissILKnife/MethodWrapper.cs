@@ -64,14 +64,12 @@ namespace SwissILKnife
 		{
 			var parameters = method.GetParameters();
 
-			const int _zero = 0;
-			const int _one = 1;
-
-			var localNumber = 0;
+			const int indexZero = 0;
+			const int indexOne = 1;
 
 			if (!method.IsStatic)
 			{
-				il.EmitLoadArgument(_zero);
+				il.EmitLoadArgument(indexZero);
 				il.EmitUnboxAny(method.DeclaringType);
 			}
 
@@ -81,7 +79,7 @@ namespace SwissILKnife
 
 				if (!param.IsOut)
 				{
-					il.EmitLoadArgument(_one);
+					il.EmitLoadArgument(indexOne);
 					il.EmitConstantInt(i);
 					il.EmitLoadArrayElement(TypeOf<object>.Get);
 				}
@@ -91,15 +89,22 @@ namespace SwissILKnife
 					il.EmitUnboxAny(param.ParameterType);
 				}
 			}
+			
+			LocalBuilder[] locals = new LocalBuilder[parameters.Length];
 
-			var locals = parameters
-							.Where(x => x.IsNeedsSetting())
-							.Select(x => {
-								var local = il.DeclareLocal(x.ParameterType.GetElementType());
-								il.EmitLoadLocalVariableAddress(local);
-								return local;
-							})
-							.ToArray();
+			for(int i = 0; i < locals.Length; i++)
+			{
+				var parameter = parameters[i];
+
+				if(parameter.IsOutOrRef())
+				{
+					var local = il.DeclareLocal(parameter.ParameterType.GetElementType());
+
+					il.EmitLoadLocalVariableAddress(local);
+
+					locals[i] = local;
+				}
+			}
 
 			if (method.IsStatic)
 			{
@@ -112,17 +117,15 @@ namespace SwissILKnife
 
 			if (locals.Length > 0)
 			{
-				localNumber = 0;
-
 				for (var i = 0; i < parameters.Length; i++) //TODO: be areful about ++idx
 				{
 					var param = parameters[i];
 
-					if (param.IsNeedsSetting())
+					if (param.IsOutOrRef())
 					{
-						var local = locals[localNumber];
+						var local = locals[i];
 
-						il.EmitLoadArgument(_one);
+						il.EmitLoadArgument(indexOne);
 						il.EmitConstantInt(i);
 						il.EmitLoadLocalVariable(local);
 
@@ -134,8 +137,6 @@ namespace SwissILKnife
 						}
 
 						il.EmitSetArrayElement(TypeOf<object>.Get);
-
-						localNumber++;
 					}
 				}
 			}
