@@ -77,7 +77,7 @@ namespace SwissILKnife
 			{
 				var param = parameters[i];
 
-				if (!param.IsOut)
+				if (!param.IsOutOrRef())
 				{
 					il.EmitLoadArgument(indexOne);
 					il.EmitConstantInt(i);
@@ -90,9 +90,9 @@ namespace SwissILKnife
 				}
 			}
 			
-			LocalBuilder[] locals = new LocalBuilder[parameters.Length];
+			var locals = new LocalBuilder[parameters.Length];
 
-			for(int i = 0; i < locals.Length; i++)
+			for (var i = 0; i < locals.Length; i++)
 			{
 				var parameter = parameters[i];
 
@@ -100,6 +100,20 @@ namespace SwissILKnife
 				{
 					var local = il.DeclareLocal(parameter.ParameterType.GetElementType());
 
+					if (parameter.IsByRef())
+					{
+						il.EmitLoadArgument(indexOne);
+						il.EmitConstantInt(i);
+						il.EmitLoadArrayElement(TypeOf<object>.Get);
+
+						if (parameter.IsValueType())
+						{
+							il.EmitUnboxAny(parameter.ParameterType);
+						}
+
+						il.EmitSetLocalVariable(local);
+					}
+					
 					il.EmitLoadLocalVariableAddress(local);
 
 					locals[i] = local;

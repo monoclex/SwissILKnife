@@ -16,16 +16,24 @@ namespace SwissILKnife.ILDebugging
 {
 	internal class Program
 	{
-		public readonly MethodInfo OutFuncExample =
-			typeof(Program).GetMethod(nameof(OutFuncWrap));
+		public readonly MethodInfo OutAndRefFunc =
+			typeof(Program).GetMethod(nameof(OutAndRefWrap));
 
-		public bool OutFuncWrap(string input, out int result) => int.TryParse(input, out result);
+		public bool OutAndRefWrap(int a, ref string b, out int c)
+		{
+			var integer = int.Parse(b);
+			b = integer.ToString() + " = INT";
+
+			c = a - integer;
+
+			return c > 0;
+		}
 
 		public void WrapsOutFunc()
 		{
-			var args = new object[] { "1234", null };
+			var args = new object[] { 5, "123", null };
 
-			// MethodWrapper.SaveWrap(OutFuncExample, "asm.dll");
+			MethodWrapper.SaveWrap(OutAndRefFunc, "asm.dll");
 		}
 
 		private static void Main()
