@@ -24,7 +24,17 @@ namespace SwissILKnife.Tests
 		public static string SomeStaticProperty { get; set; }
 		public static string SomeStaticField;
 
-		[Fact]
+        public readonly PropertyInfo ValueTypeProperty
+            = typeof(Gets).GetProperty(nameof(SomeValueTypeProperty));
+
+        public static int SomeValueTypeProperty { get; set; }
+
+        public readonly FieldInfo ValueTypeField
+            = typeof(Gets).GetField(nameof(SomeValueTypeField));
+
+        public static int SomeValueTypeField;
+
+        [Fact]
 		public void GetsLocalProperty()
 		{
 			SomeLocalProperty = " ";
@@ -54,6 +64,22 @@ namespace SwissILKnife.Tests
 			SomeStaticField = " ";
 
 			Assert.Equal(" ", MemberUtils.GetGetMethod(StaticField)(null));
-		}
-	}
+        }
+
+        [Fact]
+        public void GetsValueTypeProperty()
+        {
+            SomeValueTypeProperty = 1234;
+
+            Assert.Equal(1234, (int)MemberUtils.GetGetMethod(ValueTypeProperty)(null));
+        }
+
+        [Fact]
+        public void GetsValueTypeField()
+        {
+            SomeValueTypeField = 1234;
+
+            Assert.Equal(1234, (int)MemberUtils.GetGetMethod(ValueTypeField)(null));
+        }
+    }
 }

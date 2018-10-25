@@ -1,5 +1,5 @@
 ﻿using StrictEmit;
-
+using System;
 using System.Reflection;
 
 using InstanceInvokable = System.Action<object, object>;
@@ -51,14 +51,22 @@ namespace SwissILKnife
 
 				il.EmitLoadArgument(1);
 
-				il.EmitCallDirect(property.SetMethod);
+                if (property.PropertyType.IsValueType)
+                {
+                    il.EmitUnboxAny(property.PropertyType);
+                }
+
+                il.EmitCallDirect(property.SetMethod);
 			}
 			else if (member is FieldInfo field)
 			{
 				il.EmitLoadArgument(0);
+                
 				il.EmitLoadArgument(1);
 
-				il.EmitSetField(field);
+                il.EmitUnboxAny(field.FieldType);
+
+                il.EmitSetField(field);
 			}
 			else
 			{
@@ -105,6 +113,11 @@ namespace SwissILKnife
 				}
 
 				il.EmitCallDirect(property.GetMethod);
+
+                if (property.PropertyType.IsValueType)
+                {
+                    il.EmitBox(property.PropertyType);
+                }
 			}
 			else if (member is FieldInfo field)
 			{
@@ -118,7 +131,12 @@ namespace SwissILKnife
 
 					il.EmitLoadField(field);
 				}
-			}
+                
+                if (field.FieldType.IsValueType)
+                {
+                    il.EmitBox(field.FieldType);
+                }
+            }
 			else
 			{
 				ThrowUnsupportedArgument(member);
