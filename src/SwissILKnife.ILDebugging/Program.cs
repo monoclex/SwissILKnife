@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using SwissILKnife;
 
 /*
  *			Purpose of this project:
@@ -20,7 +18,7 @@ namespace SwissILKnife.ILDebugging
 		public override int GetHashCode() => 5;
 	}
 
-		internal class Program
+	internal class Program
 	{
 		public readonly MethodInfo OutAndRefFunc =
 			typeof(Program).GetMethod(nameof(OutAndRefWrap));

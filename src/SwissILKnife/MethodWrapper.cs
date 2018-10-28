@@ -4,7 +4,6 @@
 
 using StrictEmit;
 
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -89,14 +88,14 @@ namespace SwissILKnife
 					il.EmitUnboxAny(param.ParameterType);
 				}
 			}
-			
+
 			var locals = new LocalBuilder[parameters.Length];
 
 			for (var i = 0; i < locals.Length; i++)
 			{
 				var parameter = parameters[i];
 
-				if(parameter.IsOutOrRef())
+				if (parameter.IsOutOrRef())
 				{
 					var local = il.DeclareLocal(parameter.ParameterType.GetElementType());
 
@@ -113,7 +112,7 @@ namespace SwissILKnife
 
 						il.EmitSetLocalVariable(local);
 					}
-					
+
 					il.EmitLoadLocalVariableAddress(local);
 
 					locals[i] = local;

@@ -47,7 +47,6 @@ namespace SwissILKnife
 	/// </summary>
 	public static class InstanceOf
 	{
-
 		/// <summary>
 		/// The generic-less version of <see cref="InstanceOf{T}"/>.
 		/// Pass in a type to get a <see cref="Func{Object}"/>, which upon called, will return a new object of the desired kind
