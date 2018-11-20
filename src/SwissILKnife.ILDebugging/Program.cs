@@ -37,28 +37,28 @@ namespace SwissILKnife.ILDebugging
 		{
 			var args = new object[] { 5, "123", null };
 
-			MethodWrapper.SaveWrap(OutAndRefFunc, "asm.dll");
+			// MethodWrapper.SaveWrap(OutAndRefFunc, "asm.dll");
 		}
 
 		private static void Main()
 		{
-			Console.WriteLine(typeof(uint).GetHashCode());
-			Console.WriteLine(typeof(Wrong).GetHashCode());
+			object myInt = 123;
+			object myString = "456";
 
-			var typeCache = new TypeCache<string>();
-
-			typeCache[typeof(uint)] = "1234";
-			Console.WriteLine(typeCache[typeof(uint)]);
-
-			typeCache[typeof(Wrong)] = "5678";
-			Console.WriteLine(typeCache[typeof(uint)]);
-			Console.WriteLine(typeCache[typeof(Wrong)]);
+			Console.WriteLine(Cast1(myInt));
+			Console.WriteLine(Cast2(myString));
 
 			Console.ReadLine();
+		}
 
-			new Program().WrapsOutFunc();
-			Console.WriteLine("Saved");
-			Console.ReadLine();
+		public static object Cast1(object input)
+		{
+			return (int)input;
+		}
+
+		public static object Cast2(object input)
+		{
+			return (string)input;
 		}
 	}
 }

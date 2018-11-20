@@ -3,7 +3,7 @@
 #endif
 
 using StrictEmit;
-
+using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -38,7 +38,8 @@ namespace SwissILKnife
 			var dm = new DynamicMethod<FullyWrappedMethod>(string.Empty, TypeOf<object>.Get, Types.FullyWrappedMethodParameters, method.DeclaringType, true)
 				.GetILGenerator(out var il);
 
-			EmitWrapIL(il, method);
+			il.EmitILWrap(method, () => il.EmitLoadArgument(0), () => il.EmitLoadArgument(1));
+			il.EmitReturn();
 
 			return dm.CreateDelegate();
 		}
@@ -59,16 +60,13 @@ namespace SwissILKnife
 		}
 #endif
 
-		private static void EmitWrapIL(ILGenerator il, MethodInfo method)
+		public static void EmitILWrap(this ILGenerator il, MethodInfo method, Action loadScope, Action loadObjectArray)
 		{
 			var parameters = method.GetParameters();
 
-			const int indexZero = 0;
-			const int indexOne = 1;
-
 			if (!method.IsStatic)
 			{
-				il.EmitLoadArgument(indexZero);
+				loadScope();
 				il.EmitUnboxAny(method.DeclaringType);
 			}
 
@@ -78,7 +76,7 @@ namespace SwissILKnife
 
 				if (!param.IsOutOrRef())
 				{
-					il.EmitLoadArgument(indexOne);
+					loadObjectArray();
 					il.EmitConstantInt(i);
 					il.EmitLoadArrayElement(TypeOf<object>.Get);
 				}
@@ -101,7 +99,7 @@ namespace SwissILKnife
 
 					if (parameter.IsByRef())
 					{
-						il.EmitLoadArgument(indexOne);
+						loadObjectArray();
 						il.EmitConstantInt(i);
 						il.EmitLoadArrayElement(TypeOf<object>.Get);
 
@@ -138,7 +136,7 @@ namespace SwissILKnife
 					{
 						var local = locals[i];
 
-						il.EmitLoadArgument(indexOne);
+						loadObjectArray();
 						il.EmitConstantInt(i);
 						il.EmitLoadLocalVariable(local);
 
@@ -163,8 +161,6 @@ namespace SwissILKnife
 			{
 				il.EmitBox(method.ReturnType);
 			}
-
-			il.EmitReturn();
 		}
 	}
 }

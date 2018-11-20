@@ -1,14 +1,21 @@
+
 # SwissILKnife
+
+![bannerad]
 
 Swiss IL Knife is a "Swiss Army Knife" of sorts for IL-generated methods that are faster then their Expression & Reflection counterparts.
 
-## Library is in development
+```
+PM> Package-Install SwissILKnife -pre
+```
 
-New IL-generated methods are gladly accepted! Suggest one by submitting an issue.
+## Library very WIP
 
-Currently, SwissILKnife can wrap `MethodInfo`s into `Func<object, object[], object>`s, and create quick getter/setters.
+Have an idea for something that can be IL Generated, or a suggestion? Submit an issue!
 
-## Simple Example
+Currently, SwissILKnife can wrap `MethodInfo`s into `Func<object, object[], object>`s, and create getters/setters for `PropertyInfo`.
+
+## Example
 
 ```cs
 public class SomeClass
@@ -62,3 +69,5 @@ As for invoker generation time, SwissIL is *leagues* ahead of Expressions.
  PropCreateSetViaExpressions | 157,808.724 ns | 2,251.9861 ns | 1,880.5102 ns |
      PropCreateSetViaSwissIL |   6,792.274 ns |   131.3222 ns |   188.3384 ns |
 ```
+
+[bannerad]: ./banner_ad.png

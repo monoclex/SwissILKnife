@@ -1,7 +1,7 @@
 ﻿using StrictEmit;
-
+using System;
 using System.Reflection;
-
+using System.Reflection.Emit;
 using InstanceInvokable = System.Action<object, object>;
 using InvokableReturn = System.Func<object, object>;
 
@@ -12,6 +12,8 @@ namespace SwissILKnife
 	/// </summary>
 	public static class MemberUtils
 	{
+		//TODO: make PropertyInfo & FieldInfo overrides
+
 		private static void ThrowUnsupportedArgument(MemberInfo member)
 			=> throw new UnsupportedArgumentTypeException(
 					$"{nameof(member)}'s type isn't supported. Please ensure that {nameof(member)} is either a {nameof(PropertyInfo)}, or a {nameof(FieldInfo)}");
@@ -42,14 +44,22 @@ namespace SwissILKnife
 			var dm = new DynamicMethod<InstanceInvokable>(string.Empty, Types.Void, Types.TwoObjects, member.DeclaringType, true)
 						.GetILGenerator(out var il);
 
+			il.EmitILForSetMethod(member, () => il.EmitLoadArgument(0), () => il.EmitLoadArgument(1));
+			il.EmitReturn();
+
+			return dm.CreateDelegate();
+		}
+
+		public static void EmitILForSetMethod(this ILGenerator il, MemberInfo member, Action loadScope, Action loadValue)
+		{
 			if (member is PropertyInfo property)
 			{
 				if (!property.SetMethod.IsStatic)
 				{
-					il.EmitLoadArgument(0);
+					loadScope();
 				}
 
-				il.EmitLoadArgument(1);
+				loadValue();
 
 				if (property.PropertyType.IsValueType)
 				{
@@ -60,9 +70,9 @@ namespace SwissILKnife
 			}
 			else if (member is FieldInfo field)
 			{
-				il.EmitLoadArgument(0);
+				loadScope();
 
-				il.EmitLoadArgument(1);
+				loadValue();
 
 				il.EmitUnboxAny(field.FieldType);
 
@@ -72,10 +82,6 @@ namespace SwissILKnife
 			{
 				ThrowUnsupportedArgument(member);
 			}
-
-			il.EmitReturn();
-
-			return dm.CreateDelegate();
 		}
 
 		/// <summary>
@@ -105,11 +111,19 @@ namespace SwissILKnife
 			var dm = new DynamicMethod<InvokableReturn>(string.Empty, TypeOf<object>.Get, Types.OneObjects, member.DeclaringType, true)
 						.GetILGenerator(out var il);
 
+			il.EmitILForGetMethod(member, () => il.EmitLoadArgument(0));
+			il.EmitReturn();
+
+			return dm.CreateDelegate();
+		}
+
+		public static void EmitILForGetMethod(this ILGenerator il, MemberInfo member, Action loadScope)
+		{
 			if (member is PropertyInfo property)
 			{
 				if (!property.SetMethod.IsStatic)
 				{
-					il.EmitLoadArgument(0);
+					loadScope();
 				}
 
 				il.EmitCallDirect(property.GetMethod);
@@ -127,7 +141,7 @@ namespace SwissILKnife
 				}
 				else
 				{
-					il.EmitLoadArgument(0);
+					loadScope();
 
 					il.EmitLoadField(field);
 				}
@@ -141,10 +155,6 @@ namespace SwissILKnife
 			{
 				ThrowUnsupportedArgument(member);
 			}
-
-			il.EmitReturn();
-
-			return dm.CreateDelegate();
 		}
 	}
 }

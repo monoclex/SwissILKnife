@@ -1,6 +1,7 @@
 ﻿using StrictEmit;
 
 using System;
+using System.Reflection.Emit;
 
 namespace SwissILKnife
 {
@@ -64,10 +65,15 @@ namespace SwissILKnife
 			var dm = new DynamicMethod<Func<object>>(string.Empty, objType, Types.NoObjects, true)
 						.GetILGenerator(out var il);
 
-			il.EmitNewObject(objType.GetConstructor(Type.EmptyTypes));
+			il.EmitILCreateNewObject(objType);
 			il.EmitReturn();
 
 			return dm.CreateDelegate();
+		}
+
+		public static void EmitILCreateNewObject(this ILGenerator il, Type objType)
+		{
+			il.EmitNewObject(objType.GetConstructor(Type.EmptyTypes));
 		}
 	}
 }
