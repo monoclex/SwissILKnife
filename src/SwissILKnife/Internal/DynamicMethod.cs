@@ -6,7 +6,7 @@ using EmitDynamicMethod = System.Reflection.Emit.DynamicMethod;
 
 namespace SwissILKnife
 {
-	internal class DynamicMethod<T>
+	public class DynamicMethod<T>
 		where T : Delegate
 	{
 		public EmitDynamicMethod EmitDynamicMethod { get; set; }
