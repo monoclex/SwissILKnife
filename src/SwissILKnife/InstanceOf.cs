@@ -7,7 +7,7 @@ namespace SwissILKnife
 {
 	/// <summary>
 	/// Creates instances of objects using generics.
-	/// Generally faster than it's genericless relative, <see cref="InstanceOf"/>
+	/// Generally faster than it's generic-less relative, <see cref="InstanceOf"/>
 	/// </summary>
 	/// <typeparam name="T">The type of object to be creating</typeparam>
 	public static class InstanceOf<T>
@@ -34,7 +34,7 @@ namespace SwissILKnife
 		/// {
 		/// }
 		///
-		/// Test tst = InstanceOf<Test>.Creeate();
+		/// Test tst = InstanceOf<Test>.Create();
 		/// </code></example>
 		/// <typeparam name="T"></typeparam>
 		/// <seealso cref="InstanceOf"/>
