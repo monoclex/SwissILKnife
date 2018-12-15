@@ -9,53 +9,44 @@ namespace MiniStrictEmit
 {
 	public static class MiniStrictEmitExtensions
 	{
-		// arrays
-
 		public static void EmitStoreArrayElementObject(this ILGenerator il)
-		{
-			il.Emit(OpCodes.Stelem, TypeOf<object>.Get);
-		}
+			=> il.Emit(OpCodes.Stelem, TypeOf<object>.Get);
 
 		public static void EmitLoadArrayElementObject(this ILGenerator il)
-		{
-			il.Emit(OpCodes.Ldelem, TypeOf<object>.Get);
-		}
-
-		// calls
+			=> il.Emit(OpCodes.Ldelem, TypeOf<object>.Get);
 
 		public static void EmitCallDirect(this ILGenerator il, MethodInfo method)
-		{
-			il.Emit(OpCodes.Call, method);
-		}
+			=> il.Emit(OpCodes.Call, method);
 
 		public static void EmitCallVirtual(this ILGenerator il, MethodInfo method)
-		{
-			il.Emit(OpCodes.Callvirt, method);
-		}
-
-		// objects
+			=> il.Emit(OpCodes.Callvirt, method);
 
 		public static void EmitNewObject<T>(this ILGenerator il)
-		{
-			il.EmitNewObject(typeof(T).GetConstructor(new Type[] { }));
-		}
+			=> il.EmitNewObject(typeof(T).GetConstructor(new Type[] { }));
 
 		public static void EmitNewObject(this ILGenerator il, ConstructorInfo ctor)
-		{
-			il.Emit(OpCodes.Newobj, ctor);
-		}
-
-		// values
+			=> il.Emit(OpCodes.Newobj, ctor);
 
 		public static void EmitBox(this ILGenerator il, Type type)
-		{
-			il.Emit(OpCodes.Box, type);
-		}
+			=> il.Emit(OpCodes.Box, type);
 
 		public static void EmitUnboxAny(this ILGenerator il, Type type)
-		{
-			il.Emit(OpCodes.Unbox_Any, type);
-		}
+			=> il.Emit(OpCodes.Unbox_Any, type);
+
+		public static void EmitLoadNull(this ILGenerator il)
+			=> il.Emit(OpCodes.Ldnull);
+
+		public static void EmitSetField(this ILGenerator il, FieldInfo field)
+			=> il.Emit(OpCodes.Stfld, field);
+
+		public static void EmitReturn(this ILGenerator il)
+			=> il.Emit(OpCodes.Ret);
+
+		public static void EmitLoadStaticField(this ILGenerator il, FieldInfo field)
+			=> il.Emit(OpCodes.Ldsfld, field);
+
+		public static void EmitLoadField(this ILGenerator il, FieldInfo field)
+			=> il.Emit(OpCodes.Ldfld, field);
 
 		private static readonly OpCode[] EmitConstantIntOps = new OpCode[]
 		{
@@ -91,11 +82,6 @@ namespace MiniStrictEmit
 			}
 		}
 
-		public static void EmitLoadNull(this ILGenerator il)
-		{
-			il.Emit(OpCodes.Ldnull);
-		}
-
 		// variables
 
 		private static readonly OpCode[] EmitSetLocalVariableConsts = new OpCode[]
@@ -126,16 +112,6 @@ namespace MiniStrictEmit
 			}
 		}
 
-		public static void EmitSetField(this ILGenerator il, FieldInfo field)
-		{
-			il.Emit(OpCodes.Stfld, field);
-		}
-
-		public static void EmitReturn(this ILGenerator il)
-		{
-			il.Emit(OpCodes.Ret);
-		}
-
 		private static readonly OpCode[] EmitLoadArgumentConsts = new OpCode[]
 		{
 			OpCodes.Ldarg_0,
@@ -160,16 +136,6 @@ namespace MiniStrictEmit
 			{
 				il.Emit(OpCodes.Ldarg, (short)arg);
 			}
-		}
-
-		public static void EmitLoadStaticField(this ILGenerator il, FieldInfo field)
-		{
-			il.Emit(OpCodes.Ldsfld, field);
-		}
-
-		public static void EmitLoadField(this ILGenerator il, FieldInfo field)
-		{
-			il.Emit(OpCodes.Ldfld, field);
 		}
 
 		public static void EmitLoadLocalVariableAddress(this ILGenerator il, LocalBuilder local)
