@@ -2,7 +2,7 @@
 #define DISKSAVING
 #endif
 
-using StrictEmit;
+using MiniStrictEmit;
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
