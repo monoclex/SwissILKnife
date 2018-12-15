@@ -2,7 +2,7 @@
 #define DISKSAVING
 #endif
 
-using MiniStrictEmit;
+using StrictEmit;
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -78,7 +78,7 @@ namespace SwissILKnife
 				{
 					loadObjectArray();
 					il.EmitConstantInt(i);
-					il.EmitLoadArrayElementObject();
+					il.EmitLoadArrayElement(TypeOf<object>.Get);
 				}
 
 				if (param.IsValueType())
@@ -101,7 +101,7 @@ namespace SwissILKnife
 					{
 						loadObjectArray();
 						il.EmitConstantInt(i);
-						il.EmitLoadArrayElementObject();
+						il.EmitLoadArrayElement(TypeOf<object>.Get);
 
 						if (parameter.IsValueType())
 						{
@@ -147,7 +147,7 @@ namespace SwissILKnife
 							il.EmitBox(elemType);
 						}
 
-						il.EmitStoreArrayElementObject();
+						il.EmitSetArrayElement(TypeOf<object>.Get);
 					}
 				}
 			}

@@ -8,7 +8,13 @@ namespace SwissILKnife.Benchmarks
 {
 	public class ILWrapBenchmark
 	{
-		public string TestMethod(int a, int b) => a.ToString() + b.ToString();
+		public string TestMethod(int a, int b, out int result, out int len)
+		{
+			var retresult = a.ToString() + b.ToString();
+			result = a + b;
+			len = retresult.Length;
+			return retresult;
+		}
 
 		private MethodInfo _testMethod = typeof(ILWrapBenchmark).GetMethod(nameof(TestMethod));
 
@@ -31,15 +37,15 @@ namespace SwissILKnife.Benchmarks
 
 		[Benchmark]
 		public string CallILWrap()
-			=> (string)_ilWrap(this, new object[] { 5, 10 });
+			=> (string)_ilWrap(this, new object[] { 5, 10, null, null });
 
 		[Benchmark]
 		public string CallSwissILWrap()
-			=> (string)_swissIlWrap(this, new object[] { 5, 10 });
+			=> (string)_swissIlWrap(this, new object[] { 5, 10, null, null });
 
 		[Benchmark]
 		public string ReflectionInvoke()
-			=> (string)_testMethod.Invoke(this, new object[] { 5, 10 });
+			=> (string)_testMethod.Invoke(this, new object[] { 5, 10, null, null });
 
 		public static Func<object, object[], object> ILWrap(MethodInfo method)
 		{
