@@ -78,7 +78,7 @@ namespace SwissILKnife
 				{
 					loadObjectArray();
 					il.EmitConstantInt(i);
-					il.EmitLoadArrayElement(TypeOf<object>.Get);
+					il.EmitLoadArrayElementObject();
 				}
 
 				if (param.IsValueType())
@@ -101,7 +101,7 @@ namespace SwissILKnife
 					{
 						loadObjectArray();
 						il.EmitConstantInt(i);
-						il.EmitLoadArrayElement(TypeOf<object>.Get);
+						il.EmitLoadArrayElementObject();
 
 						if (parameter.IsValueType())
 						{
@@ -147,7 +147,7 @@ namespace SwissILKnife
 							il.EmitBox(elemType);
 						}
 
-						il.EmitSetArrayElement(TypeOf<object>.Get);
+						il.EmitStoreArrayElementObject();
 					}
 				}
 			}

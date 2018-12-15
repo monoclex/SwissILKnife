@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SwissILKnife;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -10,24 +11,14 @@ namespace MiniStrictEmit
 	{
 		// arrays
 
-		public static void EmitSetArrayElement(this ILGenerator il, Type arrElem)
+		public static void EmitStoreArrayElementObject(this ILGenerator il)
 		{
-			if (arrElem != typeof(object))
-			{
-				throw new ArgumentException($"{nameof(arrElem)} must be an {typeof(object)}");
-			}
-
-			il.Emit(OpCodes.Stelem, arrElem);
+			il.Emit(OpCodes.Stelem, TypeOf<object>.Get);
 		}
 
-		public static void EmitLoadArrayElement(this ILGenerator il, Type arrElem)
+		public static void EmitLoadArrayElementObject(this ILGenerator il)
 		{
-			if (arrElem != typeof(object))
-			{
-				throw new ArgumentException($"{nameof(arrElem)} must be an {typeof(object)}");
-			}
-
-			il.Emit(OpCodes.Ldelem, arrElem);
+			il.Emit(OpCodes.Ldelem, TypeOf<object>.Get);
 		}
 
 		// calls
