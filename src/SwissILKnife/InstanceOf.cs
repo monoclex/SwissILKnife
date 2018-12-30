@@ -1,6 +1,4 @@
 ﻿using MiniStrictEmit;
-using System;
-using System.Reflection.Emit;
 
 namespace SwissILKnife
 {
@@ -19,10 +17,10 @@ namespace SwissILKnife
 			il.EmitNewObject<T>();
 			il.EmitReturn();
 
-			Constructor = dm.CreateDelegate();
+			_constructor = dm.CreateDelegate();
 		}
 
-		private static readonly Func<T> Constructor;
+		private static readonly Func<T> _constructor;
 
 		/// <summary>
 		/// Create an instance of <typeparamref name="T"/>.
@@ -38,7 +36,7 @@ namespace SwissILKnife
 		/// <typeparam name="T"></typeparam>
 		/// <seealso cref="InstanceOf"/>
 		public static T Create()
-			=> Constructor();
+			=> _constructor();
 	}
 
 	/// <summary>
@@ -70,9 +68,6 @@ namespace SwissILKnife
 			return dm.CreateDelegate();
 		}
 
-		public static void EmitILCreateNewObject(this ILGenerator il, Type objType)
-		{
-			il.EmitNewObject(objType.GetConstructor(Type.EmptyTypes));
-		}
+		public static void EmitILCreateNewObject(this ILGenerator il, Type objType) => il.EmitNewObject(objType.GetConstructor(Type.EmptyTypes));
 	}
 }

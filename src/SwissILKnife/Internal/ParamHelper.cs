@@ -2,11 +2,9 @@
 #define DISKSAVING
 #endif
 
-using System.Reflection;
-
 namespace SwissILKnife
 {
-	internal static class ParamHelper
+	public static class ParamHelper
 	{
 		public static bool IsByRef(this ParameterInfo parameterInfo)
 			=> parameterInfo.ParameterType.IsByRef && !parameterInfo.IsOut;

@@ -3,9 +3,6 @@
 #endif
 
 using MiniStrictEmit;
-using System;
-using System.Reflection;
-using System.Reflection.Emit;
 
 using FullyWrappedMethod = System.Func<object, object[], object>;
 
@@ -128,7 +125,8 @@ namespace SwissILKnife
 
 			if (locals.Length > 0)
 			{
-				for (var i = 0; i < parameters.Length; i++) //TODO: be areful about ++idx
+				// TODO: be careful about ++i
+				for (var i = 0; i < parameters.Length; i++)
 				{
 					var param = parameters[i];
 

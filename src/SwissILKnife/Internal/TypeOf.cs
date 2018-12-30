@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SwissILKnife
+﻿namespace SwissILKnife
 {
 	internal static class TypeOf<T>
 	{

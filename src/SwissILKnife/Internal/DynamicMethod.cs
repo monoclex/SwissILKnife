@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
-
 using EmitDynamicMethod = System.Reflection.Emit.DynamicMethod;
 
 namespace SwissILKnife
@@ -10,6 +9,7 @@ namespace SwissILKnife
 		where T : Delegate
 	{
 		public EmitDynamicMethod EmitDynamicMethod { get; set; }
+
 		public ILGenerator ILGenerator { get; set; }
 
 		public Delegate CreateDelegate(Type delegateType)
@@ -18,10 +18,10 @@ namespace SwissILKnife
 		public Delegate CreateDelegate(Type delegateType, object target)
 			=> EmitDynamicMethod.CreateDelegate(delegateType, target);
 
-		private static readonly Type Type = typeof(T);
+		private static readonly Type _type = typeof(T);
 
 		public T CreateDelegate()
-			=> (T)CreateDelegate(Type);
+			=> (T)CreateDelegate(_type);
 
 		private DynamicMethod(EmitDynamicMethod dynMethod)
 		{

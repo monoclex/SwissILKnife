@@ -51,14 +51,8 @@ namespace SwissILKnife.ILDebugging
 			Console.ReadLine();
 		}
 
-		public static object Cast1(object input)
-		{
-			return (int)input;
-		}
+		public static object Cast1(object input) => (int)input;
 
-		public static object Cast2(object input)
-		{
-			return (string)input;
-		}
+		public static object Cast2(object input) => (string)input;
 	}
 }

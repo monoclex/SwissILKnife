@@ -1,5 +1,4 @@
 ﻿using MiniStrictEmit;
-using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using InstanceInvokable = System.Action<object, object>;
@@ -12,7 +11,7 @@ namespace SwissILKnife
 	/// </summary>
 	public static class MemberUtils
 	{
-		//TODO: make PropertyInfo & FieldInfo overrides
+		// TODO: make PropertyInfo & FieldInfo overrides
 
 		private static void ThrowUnsupportedArgument(MemberInfo member)
 			=> throw new UnsupportedArgumentTypeException(

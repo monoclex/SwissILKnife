@@ -1,12 +1,4 @@
-﻿using SwissILKnife;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Text;
-
-namespace MiniStrictEmit
+﻿namespace MiniStrictEmit
 {
 	internal static class MiniStrictEmitExtensions
 	{
@@ -80,7 +72,6 @@ namespace MiniStrictEmit
 
 				default:
 				{
-
 					if (value > 8 && value <= 255)
 					{
 						il.Emit(OpCodes.Ldc_I4_S, (byte)value);
@@ -99,7 +90,7 @@ namespace MiniStrictEmit
 		{
 			var indx = local.LocalIndex;
 
-			switch(indx)
+			switch (indx)
 			{
 				case 0: il.Emit(OpCodes.Stloc_0); break;
 				case 1: il.Emit(OpCodes.Stloc_1); break;
