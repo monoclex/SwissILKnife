@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FluentAssertions;
+
+using System;
 using System.Reflection.Emit;
-using System.Text;
+
 using Xunit;
-using FluentAssertions;
 
 namespace SwissILKnife.Tests
 {

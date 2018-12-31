@@ -3,9 +3,11 @@
 #endif
 
 using MiniStrictEmit;
+
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
+
 using FullyWrappedMethod = System.Func<object, object[], object>;
 
 namespace SwissILKnife
