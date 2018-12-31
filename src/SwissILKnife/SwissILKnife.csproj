@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AbstractILGenerator" Version="1.0.0" />
+    <PackageReference Include="AbstractILGenerator" Version="1.0.1" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
 
