@@ -8,10 +8,10 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
-using FullyWrappedMethod = System.Func<object, object[], object>;
-
 namespace SwissILKnife
 {
+	public delegate object Wrapped(object instance, object[] parameters);
+
 	/// <summary>
 	/// Wraps entire <see cref="MethodInfo"/>s into a <see cref="System.Delegate"/>
 	/// </summary>
@@ -33,8 +33,8 @@ namespace SwissILKnife
 		/// var parsedInt = (int)args[1];
 		/// </code></example>
 		/// <param name="method">The method to wrap</param>
-		/// <returns>A <see cref="FullyWrappedMethod"/> that acts similar to invoking the method</returns>
-		public static FullyWrappedMethod Wrap(MethodInfo method)
+		/// <returns>A <see cref="Wrapped"/> that acts similar to invoking the method</returns>
+		public static Wrapped Wrap(MethodInfo method)
 		{
 			var dm = new DynamicMethod(string.Empty, TypeOf<object>.Get, Types.FullyWrappedMethodParameters, method.DeclaringType, true)
 				.GetILGenerator(out var il);
@@ -42,24 +42,8 @@ namespace SwissILKnife
 			il.EmitILWrap(method, () => il.EmitLoadArgument(0), () => il.EmitLoadArgument(1));
 			il.EmitReturn();
 
-			return dm.CreateDelegate<FullyWrappedMethod>();
+			return dm.CreateDelegate<Wrapped>();
 		}
-
-#if DISKSAVING
-		public static void SaveWrap(MethodInfo method, string dllName)
-		{
-			var asm = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("TestAssembly"), AssemblyBuilderAccess.RunAndSave);
-			var mod = asm.DefineDynamicModule("TestModule", "asm.dll", true);
-			var cls = mod.DefineType("SomeClass", TypeAttributes.Public | TypeAttributes.Class);
-			var dm = cls.DefineMethod("Test", MethodAttributes.Public, TypeOf<object>.Get, Types.FullyWrappedMethodParameters);
-			var il = dm.GetILGenerator();
-
-			EmitWrapIL(il, method);
-
-			cls.CreateType();
-			asm.Save(dllName, PortableExecutableKinds.ILOnly, ImageFileMachine.AMD64);
-		}
-#endif
 
 		public static void EmitILWrap(this ILGenerator il, MethodInfo method, Action loadScope, Action loadObjectArray)
 		{

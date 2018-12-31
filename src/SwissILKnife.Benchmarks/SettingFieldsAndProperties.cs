@@ -50,7 +50,7 @@ namespace SwissILKnife.Benchmarks
 		[Benchmark]
 		public void SwissILSetProperty()
 		{
-			var swiss = MemberUtils.GetSetMethod(_property);
+			var swiss = MemberUtils.GenerateSetMethod(_property);
 			for (var i = 0; i < Reps; i++)
 				swiss(this, 3);
 		}
@@ -58,7 +58,7 @@ namespace SwissILKnife.Benchmarks
 		[Benchmark]
 		public void SwissILSetField()
 		{
-			var swiss = MemberUtils.GetSetMethod(_field);
+			var swiss = MemberUtils.GenerateSetMethod(_field);
 			for (var i = 0; i < Reps; i++)
 				swiss(this, 3);
 		}
@@ -66,7 +66,7 @@ namespace SwissILKnife.Benchmarks
 		[Benchmark]
 		public void SwissILGetProperty()
 		{
-			var swiss = MemberUtils.GetGetMethod(_property);
+			var swiss = MemberUtils.GenerateGetMethod(_property);
 			for (var i = 0; i < Reps; i++)
 				swiss(this);
 		}
@@ -74,7 +74,7 @@ namespace SwissILKnife.Benchmarks
 		[Benchmark]
 		public void SwissILGetField()
 		{
-			var swiss = MemberUtils.GetGetMethod(_field);
+			var swiss = MemberUtils.GenerateGetMethod(_field);
 			for (var i = 0; i < Reps; i++)
 				swiss(this);
 		}

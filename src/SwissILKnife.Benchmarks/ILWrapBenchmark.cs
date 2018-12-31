@@ -19,7 +19,7 @@ namespace SwissILKnife.Benchmarks
 		private MethodInfo _testMethod = typeof(ILWrapBenchmark).GetMethod(nameof(TestMethod));
 
 		private readonly Func<object, object[], object> _ilWrap;
-		private readonly Func<object, object[], object> _swissIlWrap;
+		private readonly Wrapped _swissIlWrap;
 
 		public ILWrapBenchmark()
 		{
@@ -32,7 +32,7 @@ namespace SwissILKnife.Benchmarks
 			=> ILWrap(_testMethod);
 
 		[Benchmark]
-		public Func<object, object[], object> GenerateSwissILWrap()
+		public Wrapped GenerateSwissILWrap()
 			=> MethodWrapper.Wrap(_testMethod);
 
 		[Benchmark]

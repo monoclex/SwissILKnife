@@ -64,13 +64,10 @@ namespace SwissILKnife
 			var dm = new DynamicMethod(string.Empty, objType, Types.NoObjects, true)
 						.GetILGenerator(out var il);
 
-			il.EmitILCreateNewObject(objType);
+			il.EmitNewObject(objType.GetConstructor(Type.EmptyTypes));
 			il.EmitReturn();
 
 			return dm.CreateDelegate<Func<object>>();
 		}
-
-		public static void EmitILCreateNewObject(this ILGenerator il, Type objType)
-			=> il.EmitNewObject(objType.GetConstructor(Type.EmptyTypes));
 	}
 }

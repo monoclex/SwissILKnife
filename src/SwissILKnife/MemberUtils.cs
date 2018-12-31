@@ -4,90 +4,21 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
-using InstanceInvokable = System.Action<object, object>;
-using InvokableReturn = System.Func<object, object>;
-
 namespace SwissILKnife
 {
+	public delegate object GetMethod(object instance);
+	public delegate void SetMethod(object instance, object value);
+
 	/// <summary>
 	/// A class to generate Get and Set methods for getting/setting fields/properties
 	/// </summary>
 	public static class MemberUtils
 	{
-		// TODO: make PropertyInfo & FieldInfo overrides
-
 		private static void ThrowUnsupportedArgument(MemberInfo member)
-			=> throw new UnsupportedArgumentTypeException(
-					$"{nameof(member)}'s type isn't supported. Please ensure that {nameof(member)} is either a {nameof(PropertyInfo)}, or a {nameof(FieldInfo)}");
+			=> throw new ArgumentException($"{nameof(member)} must be a {nameof(PropertyInfo)} or {nameof(FieldInfo)}");
 
 		/// <summary>
-		/// Gets a <see cref="InstanceInvokable"/> to set the value of a given <see cref="MemberInfo"/>.
-		/// Set the instance to null (first parameter) if it's a static member;
-		/// </summary>
-		/// <example><code>
-		/// public class Test
-		/// {
-		///		public string Property { get; set; }
-		/// }
-		///
-		/// var tst = new Test();
-		///
-		/// var method = GetSetMethod(typeof(Test).GetProperty(nameof(Test.Property)));
-		///
-		/// method(tst, "1234");
-		///
-		/// Console.WriteLine(tst.Property);
-		/// // outputs "1234" to the console
-		/// </code></example>
-		/// <param name="member">The member.</param>
-		/// <returns>A <see cref="InstanceInvokable"/> that when called upon with the correct parameters, update the given <see cref="MemberInfo"/>'s value to the one specified.</returns>
-		public static InstanceInvokable GetSetMethod(MemberInfo member)
-		{
-			var dm = new DynamicMethod(string.Empty, Types.Void, Types.TwoObjects, member.DeclaringType, true)
-						.GetILGenerator(out var il);
-
-			il.EmitILForSetMethod(member, () => il.EmitLoadArgument(0), () => il.EmitLoadArgument(1));
-			il.EmitReturn();
-
-			return dm.CreateDelegate<InstanceInvokable>();
-		}
-
-		public static void EmitILForSetMethod(this ILGenerator il, MemberInfo member, Action loadScope, Action loadValue)
-		{
-			if (member is PropertyInfo property)
-			{
-				if (!property.SetMethod.IsStatic)
-				{
-					loadScope();
-				}
-
-				loadValue();
-
-				if (property.PropertyType.IsValueType)
-				{
-					il.EmitUnboxAny(property.PropertyType);
-				}
-
-				il.EmitCallDirect(property.SetMethod);
-			}
-			else if (member is FieldInfo field)
-			{
-				loadScope();
-
-				loadValue();
-
-				il.EmitUnboxAny(field.FieldType);
-
-				il.EmitSetField(field);
-			}
-			else
-			{
-				ThrowUnsupportedArgument(member);
-			}
-		}
-
-		/// <summary>
-		/// Gets a <see cref="InvokableReturn"/> to get the value of a given <see cref="MemberInfo"/>.
+		/// Gets a <see cref="GetMethod"/> to get the value of a given <see cref="MemberInfo"/>.
 		/// Set the instance to null (first parameter) if it's a static member.
 		/// </summary>
 		/// <example><code>
@@ -107,56 +38,145 @@ namespace SwissILKnife
 		/// // will output "5678" to the console
 		/// </code></example>
 		/// <param name="member">The property or field.</param>
-		/// <returns>A <see cref="InvokableReturn"/> that when called upon with the correct parameter, will return the value desired based upon the instance.</returns>
-		public static InvokableReturn GetGetMethod(MemberInfo member)
+		/// <returns>A <see cref="GetMethod"/> that when called upon with the correct parameter, will return the value desired based upon the instance.</returns>
+		public static GetMethod GenerateGetMethod(MemberInfo member)
 		{
 			var dm = new DynamicMethod(string.Empty, TypeOf<object>.Get, Types.OneObjects, member.DeclaringType, true)
 						.GetILGenerator(out var il);
 
-			il.EmitILForGetMethod(member, () => il.EmitLoadArgument(0));
+			il.EmitGetMethod(member, () => il.EmitLoadArgument(0));
 			il.EmitReturn();
 
-			return dm.CreateDelegate<InvokableReturn>();
+			return dm.CreateDelegate<GetMethod>();
 		}
 
-		public static void EmitILForGetMethod(this ILGenerator il, MemberInfo member, Action loadScope)
+		public static void EmitGetMethod(this ILGenerator il, MemberInfo member, Action loadScope)
 		{
 			if (member is PropertyInfo property)
 			{
-				if (!property.SetMethod.IsStatic)
-				{
-					loadScope();
-				}
-
-				il.EmitCallDirect(property.GetMethod);
-
-				if (property.PropertyType.IsValueType)
-				{
-					il.EmitBox(property.PropertyType);
-				}
+				il.EmitGetMethod(property, loadScope);
 			}
 			else if (member is FieldInfo field)
 			{
-				if (field.IsStatic)
-				{
-					il.EmitLoadStaticField(field);
-				}
-				else
-				{
-					loadScope();
-
-					il.EmitLoadField(field);
-				}
-
-				if (field.FieldType.IsValueType)
-				{
-					il.EmitBox(field.FieldType);
-				}
+				il.EmitGetMethod(field, loadScope);
 			}
 			else
 			{
 				ThrowUnsupportedArgument(member);
 			}
+		}
+
+		public static void EmitGetMethod(this ILGenerator il, PropertyInfo property, Action loadScope)
+		{
+			if (!property.SetMethod.IsStatic)
+			{
+				loadScope();
+			}
+
+			il.EmitCallDirect(property.GetMethod);
+
+			if (property.PropertyType.IsValueType)
+			{
+				il.EmitBox(property.PropertyType);
+			}
+		}
+
+		public static void EmitGetMethod(this ILGenerator il, FieldInfo field, Action loadScope)
+		{
+			if (field.IsStatic)
+			{
+				il.EmitLoadStaticField(field);
+			}
+			else
+			{
+				loadScope();
+
+				il.EmitLoadField(field);
+			}
+
+			if (field.FieldType.IsValueType)
+			{
+				il.EmitBox(field.FieldType);
+			}
+		}
+
+		/// <summary>
+		/// Gets a <see cref="SetMethod"/> to set the value of a given <see cref="MemberInfo"/>.
+		/// Set the instance to null (first parameter) if it's a static member;
+		/// </summary>
+		/// <example><code>
+		/// public class Test
+		/// {
+		///		public string Property { get; set; }
+		/// }
+		///
+		/// var tst = new Test();
+		///
+		/// var method = GetSetMethod(typeof(Test).GetProperty(nameof(Test.Property)));
+		///
+		/// method(tst, "1234");
+		///
+		/// Console.WriteLine(tst.Property);
+		/// // outputs "1234" to the console
+		/// </code></example>
+		/// <param name="member">The member.</param>
+		/// <returns>A <see cref="SetMethod"/> that when called upon with the correct parameters, update the given <see cref="MemberInfo"/>'s value to the one specified.</returns>
+		public static SetMethod GenerateSetMethod(MemberInfo member)
+		{
+			var dm = new DynamicMethod(string.Empty, Types.Void, Types.TwoObjects, member.DeclaringType, true)
+						.GetILGenerator(out var il);
+
+			il.EmitSetMethod(member, () => il.EmitLoadArgument(0), () => il.EmitLoadArgument(1));
+			il.EmitReturn();
+
+			return dm.CreateDelegate<SetMethod>();
+		}
+
+		public static void EmitSetMethod(this ILGenerator il, MemberInfo member, Action loadScope, Action loadValue)
+		{
+			if (member is PropertyInfo property)
+			{
+				il.EmitSetMethod(property, loadScope, loadValue);
+			}
+			else if (member is FieldInfo field)
+			{
+				il.EmitSetMethod(field, loadScope, loadValue);
+			}
+			else
+			{
+				ThrowUnsupportedArgument(member);
+			}
+		}
+
+		public static void EmitSetMethod(this ILGenerator il, PropertyInfo property, Action loadScope, Action loadValue)
+		{
+			if (!property.SetMethod.IsStatic)
+			{
+				loadScope();
+			}
+
+			loadValue();
+
+			if (property.PropertyType.IsValueType)
+			{
+				il.EmitUnboxAny(property.PropertyType);
+			}
+
+			il.EmitCallDirect(property.SetMethod);
+		}
+
+		public static void EmitSetMethod(this ILGenerator il, FieldInfo field, Action loadScope, Action loadValue)
+		{
+			loadScope();
+
+			loadValue();
+
+			if (field.FieldType.IsValueType)
+			{
+				il.EmitUnboxAny(field.FieldType);
+			}
+
+			il.EmitSetField(field);
 		}
 	}
 }

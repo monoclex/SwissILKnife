@@ -39,7 +39,7 @@ namespace SwissILKnife.Tests
 		{
 			SomeLocalProperty = string.Empty;
 
-			MemberUtils.GetSetMethod(LocalProperty)(this, " ");
+			MemberUtils.GenerateSetMethod(LocalProperty)(this, " ");
 
 			Assert.Equal(" ", SomeLocalProperty);
 		}
@@ -49,7 +49,7 @@ namespace SwissILKnife.Tests
 		{
 			SomeLocalField = string.Empty;
 
-			MemberUtils.GetSetMethod(LocalField)(this, " ");
+			MemberUtils.GenerateSetMethod(LocalField)(this, " ");
 
 			Assert.Equal(" ", SomeLocalField);
 		}
@@ -59,7 +59,7 @@ namespace SwissILKnife.Tests
 		{
 			SomeStaticProperty = string.Empty;
 
-			MemberUtils.GetSetMethod(StaticProperty)(this, " ");
+			MemberUtils.GenerateSetMethod(StaticProperty)(this, " ");
 
 			Assert.Equal(" ", SomeStaticProperty);
 		}
@@ -69,7 +69,7 @@ namespace SwissILKnife.Tests
 		{
 			SomeStaticField = string.Empty;
 
-			MemberUtils.GetSetMethod(StaticField)(this, " ");
+			MemberUtils.GenerateSetMethod(StaticField)(this, " ");
 
 			Assert.Equal(" ", SomeStaticField);
 		}
@@ -79,7 +79,7 @@ namespace SwissILKnife.Tests
 		{
 			SomeValueTypeProperty = 0;
 
-			MemberUtils.GetSetMethod(ValueTypeProperty)(this, 1234);
+			MemberUtils.GenerateSetMethod(ValueTypeProperty)(this, 1234);
 
 			Assert.Equal(1234, SomeValueTypeProperty);
 		}
@@ -89,7 +89,7 @@ namespace SwissILKnife.Tests
 		{
 			SomeValueTypeField = 0;
 
-			MemberUtils.GetSetMethod(ValueTypeField)(this, 1234);
+			MemberUtils.GenerateSetMethod(ValueTypeField)(this, 1234);
 
 			Assert.Equal(1234, SomeValueTypeField);
 		}

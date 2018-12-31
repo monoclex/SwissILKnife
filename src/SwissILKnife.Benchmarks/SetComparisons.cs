@@ -17,10 +17,10 @@ namespace SwissILKnife.Benchmarks
 
 		private readonly MethodInfo _propertySet;
 
-		private readonly Action<object, object> _propSetExpressions;
-		private readonly Action<object, object> _propSetIL;
-		private readonly Action<object, object> _propSetSwissIL;
-		private readonly Action<object, object> _fieldSetSwissIL;
+		private readonly SetMethod _propSetExpressions;
+		private readonly SetMethod _propSetIL;
+		private readonly SetMethod _propSetSwissIL;
+		private readonly SetMethod _fieldSetSwissIL;
 
 		public SetComparisons()
 		{
@@ -39,20 +39,20 @@ namespace SwissILKnife.Benchmarks
 		}
 
 		[Benchmark]
-		public Action<object, object> PropCreateSetViaExpressions()
+		public SetMethod PropCreateSetViaExpressions()
 			=> SetViaExpression(_property);
 
 		[Benchmark]
-		public Action<object, object> PropCreateSetViaIL()
+		public SetMethod PropCreateSetViaIL()
 			=> SetViaIL(_propertySet);
 
 		[Benchmark]
-		public Action<object, object> PropCreateSetViaSwissIL()
-			=> MemberUtils.GetSetMethod(_property);
+		public SetMethod PropCreateSetViaSwissIL()
+			=> MemberUtils.GenerateSetMethod(_property);
 
 		[Benchmark]
-		public Action<object, object> FieldCreateSetViaSwissIL()
-			=> MemberUtils.GetSetMethod(_field);
+		public SetMethod FieldCreateSetViaSwissIL()
+			=> MemberUtils.GenerateSetMethod(_field);
 
 		[Benchmark]
 		public void PropInvokeSetViaExpressions()
@@ -78,7 +78,7 @@ namespace SwissILKnife.Benchmarks
 		public void FieldReflectionSet()
 			=> _field.SetValue(this, string.Empty);
 
-		private static Action<object, object> SetViaExpression(PropertyInfo info)
+		private static SetMethod SetViaExpression(PropertyInfo info)
 		{
 			var setMethodInfo = info.GetSetMethod(true);
 			var instance = Expression.Parameter(typeof(object), "instance");
@@ -86,10 +86,10 @@ namespace SwissILKnife.Benchmarks
 			var instanceCast = (!info.DeclaringType.GetTypeInfo().IsValueType) ? Expression.TypeAs(instance, info.DeclaringType) : Expression.Convert(instance, info.DeclaringType);
 			var valueCast = (!info.PropertyType.GetTypeInfo().IsValueType) ? Expression.TypeAs(value, info.PropertyType) : Expression.Convert(value, info.PropertyType);
 
-			return Expression.Lambda<Action<object, object>>(Expression.Call(instanceCast, setMethodInfo, valueCast), new ParameterExpression[] { instance, value }).Compile();
+			return Expression.Lambda<SetMethod>(Expression.Call(instanceCast, setMethodInfo, valueCast), new ParameterExpression[] { instance, value }).Compile();
 		}
 
-		private static Action<object, object> SetViaIL(MethodInfo method)
+		private static SetMethod SetViaIL(MethodInfo method)
 		{
 			var dm = new DynamicMethod(method.Name, null, new Type[] {
 				typeof(object), typeof(object)
@@ -112,7 +112,7 @@ namespace SwissILKnife.Benchmarks
 
 			il.Emit(OpCodes.Ret);
 
-			return (Action<object, object>)dm.CreateDelegate(typeof(Action<object, object>));
+			return (SetMethod)dm.CreateDelegate(typeof(SetMethod));
 		}
 	}
 }
