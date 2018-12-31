@@ -1,4 +1,6 @@
-﻿namespace SwissILKnife
+﻿using System;
+
+namespace SwissILKnife
 {
 	internal static class Types
 	{

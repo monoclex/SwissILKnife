@@ -1,4 +1,5 @@
 ﻿using MiniStrictEmit;
+using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using InstanceInvokable = System.Action<object, object>;

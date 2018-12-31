@@ -1,4 +1,6 @@
 ﻿using MiniStrictEmit;
+using System;
+using System.Reflection.Emit;
 
 namespace SwissILKnife
 {

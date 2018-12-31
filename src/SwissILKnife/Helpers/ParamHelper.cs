@@ -2,6 +2,8 @@
 #define DISKSAVING
 #endif
 
+using System.Reflection;
+
 namespace SwissILKnife
 {
 	public static class ParamHelper

@@ -1,4 +1,9 @@
-﻿namespace MiniStrictEmit
+﻿using System;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+
+namespace MiniStrictEmit
 {
 	internal static class MiniStrictEmitExtensions
 	{
