@@ -5,11 +5,6 @@
 
 
 // Metadata version: v4.0.30319
-.assembly extern netstandard
-{
-  .publickeytoken = (CC 7B 13 FF CD 2D DD 51 )                         // .{...-.Q
-  .ver 2:0:0:0
-}
 .assembly extern System.Reflection.Emit.ILGeneration
 {
   .publickeytoken = (B0 3F 5F 7F 11 D5 0A 3A )                         // .?_....:
@@ -52,17 +47,10 @@
 
 // =============== CLASS MEMBERS DECLARATION ===================
 
-.class public auto ansi beforefieldinit AbstractILGenerator.AbstractILGenerator
-       extends [System.Reflection.Emit.ILGeneration]System.Reflection.Emit.ILGenerator
+.class public AbstractILGenerator.AbstractILGenerator extends [System.Reflection.Emit.ILGeneration]System.Reflection.Emit.ILGenerator
 {
-  .method public hidebysig specialname rtspecialname 
-          instance void  .ctor() cil managed
+  .method public rtspecialname specialname instance void .ctor() cil managed
   {
-    // 
-    .maxstack  8
-    IL_0000:  ldarg.0
-    IL_0001:  call       instance void [System.Reflection.Emit.ILGeneration]System.Reflection.Emit.ILGenerator::.ctor()
-    IL_0006:  ret
   } // end of method Test::.ctor
 
 } // end of class AbstractILGenerator.Test

@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 
-namespace SwissILKnife.Helpers
+namespace SwissILKnife
 {
 	public class ILGeneratorPipeline : AbstractILGenerator.AbstractILGenerator
 	{
