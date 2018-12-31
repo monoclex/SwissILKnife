@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Reflection;
+using System.Reflection.Emit;
+using SwissILKnife;
 
 /*
  *			Purpose of this project:
@@ -15,44 +17,29 @@ namespace SwissILKnife.ILDebugging
 {
 	public class Wrong
 	{
+		public string Test { get; set; }
 		public override int GetHashCode() => 5;
 	}
 
 	internal class Program
 	{
-		public readonly MethodInfo OutAndRefFunc =
-			typeof(Program).GetMethod(nameof(OutAndRefWrap));
-
-		public bool OutAndRefWrap(int a, ref string b, out int c)
-		{
-			var integer = int.Parse(b);
-			b = integer.ToString() + " = INT";
-
-			c = a - integer;
-
-			return c > 0;
-		}
-
-		public void WrapsOutFunc()
-		{
-			var args = new object[] { 5, "123", null };
-
-			// MethodWrapper.SaveWrap(OutAndRefFunc, "asm.dll");
-		}
-
 		private static void Main()
 		{
 			object myInt = 123;
 			object myString = "456";
 
-			Console.WriteLine(Cast1(myInt));
-			Console.WriteLine(Cast2(myString));
+			var asm = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("TestAssembly"), AssemblyBuilderAccess.RunAndSave);
+			var mod = asm.DefineDynamicModule("TestModule", "asm.dll", true);
+			var cls = mod.DefineType("SomeClass", TypeAttributes.Public | TypeAttributes.Class);
+			var dm = cls.DefineMethod("Test", MethodAttributes.Public, typeof(object), new Type[] { typeof(object), typeof(object[]) });
+			var il = dm.GetILGenerator();
+
+
+
+			cls.CreateType();
+			asm.Save("asm.dll", PortableExecutableKinds.ILOnly, ImageFileMachine.AMD64);
 
 			Console.ReadLine();
 		}
-
-		public static object Cast1(object input) => (int)input;
-
-		public static object Cast2(object input) => (string)input;
 	}
 }

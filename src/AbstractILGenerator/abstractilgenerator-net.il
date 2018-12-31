@@ -54,7 +54,7 @@
 
 // =============== CLASS MEMBERS DECLARATION ===================
 
-.class public AbstractILGenerator.AbstractILGenerator extends [System.Reflection.Emit.ILGeneration]System.Reflection.Emit.ILGenerator
+.class public AbstractILGenerator.AbstractILGenerator extends [mscorlib]System.Reflection.Emit.ILGenerator
 {
   .method public rtspecialname specialname instance void .ctor() cil managed
   {

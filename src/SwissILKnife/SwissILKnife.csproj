@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
     <Version>0.0.6-pre</Version>
     <Description>A "Swiss Army Knife" of sorts for IL-generated methods that are faster then their Expression &amp; Reflection counterparts.</Description>
@@ -10,6 +10,8 @@
     <PackageTags>IL, CIL, Reflection</PackageTags>
     <PackageReleaseNotes>A pre release for trying out SwissILKnife. Report bugs as you find them!</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>SirJosh3917</Authors>
+    <Company>SirJosh3917</Company>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
@@ -17,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AbstractILGenerator" Version="1.0.1" />
+    <PackageReference Include="AbstractILGenerator" Version="1.0.3" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
 

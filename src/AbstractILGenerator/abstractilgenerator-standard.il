@@ -5,11 +5,6 @@
 
 
 // Metadata version: v4.0.30319
-.assembly extern System.Reflection.Emit.ILGeneration
-{
-  .publickeytoken = (B0 3F 5F 7F 11 D5 0A 3A )                         // .?_....:
-  .ver 4:0:0:0
-}
 .assembly AbstractILGenerator
 {
   .custom instance void [netstandard]System.Runtime.CompilerServices.CompilationRelaxationsAttribute::.ctor(int32) = ( 01 00 08 00 00 00 00 00 ) 
