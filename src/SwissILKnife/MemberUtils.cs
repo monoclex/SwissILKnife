@@ -41,13 +41,13 @@ namespace SwissILKnife
 		/// <returns>A <see cref="InstanceInvokable"/> that when called upon with the correct parameters, update the given <see cref="MemberInfo"/>'s value to the one specified.</returns>
 		public static InstanceInvokable GetSetMethod(MemberInfo member)
 		{
-			var dm = new DynamicMethod<InstanceInvokable>(string.Empty, Types.Void, Types.TwoObjects, member.DeclaringType, true)
+			var dm = new DynamicMethod(string.Empty, Types.Void, Types.TwoObjects, member.DeclaringType, true)
 						.GetILGenerator(out var il);
 
 			il.EmitILForSetMethod(member, () => il.EmitLoadArgument(0), () => il.EmitLoadArgument(1));
 			il.EmitReturn();
 
-			return dm.CreateDelegate();
+			return dm.CreateDelegate<InstanceInvokable>();
 		}
 
 		public static void EmitILForSetMethod(this ILGenerator il, MemberInfo member, Action loadScope, Action loadValue)
@@ -108,13 +108,13 @@ namespace SwissILKnife
 		/// <returns>A <see cref="InvokableReturn"/> that when called upon with the correct parameter, will return the value desired based upon the instance.</returns>
 		public static InvokableReturn GetGetMethod(MemberInfo member)
 		{
-			var dm = new DynamicMethod<InvokableReturn>(string.Empty, TypeOf<object>.Get, Types.OneObjects, member.DeclaringType, true)
+			var dm = new DynamicMethod(string.Empty, TypeOf<object>.Get, Types.OneObjects, member.DeclaringType, true)
 						.GetILGenerator(out var il);
 
 			il.EmitILForGetMethod(member, () => il.EmitLoadArgument(0));
 			il.EmitReturn();
 
-			return dm.CreateDelegate();
+			return dm.CreateDelegate<InvokableReturn>();
 		}
 
 		public static void EmitILForGetMethod(this ILGenerator il, MemberInfo member, Action loadScope)

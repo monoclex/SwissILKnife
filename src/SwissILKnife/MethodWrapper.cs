@@ -34,13 +34,13 @@ namespace SwissILKnife
 		/// <returns>A <see cref="FullyWrappedMethod"/> that acts similar to invoking the method</returns>
 		public static FullyWrappedMethod Wrap(MethodInfo method)
 		{
-			var dm = new DynamicMethod<FullyWrappedMethod>(string.Empty, TypeOf<object>.Get, Types.FullyWrappedMethodParameters, method.DeclaringType, true)
+			var dm = new DynamicMethod(string.Empty, TypeOf<object>.Get, Types.FullyWrappedMethodParameters, method.DeclaringType, true)
 				.GetILGenerator(out var il);
 
 			il.EmitILWrap(method, () => il.EmitLoadArgument(0), () => il.EmitLoadArgument(1));
 			il.EmitReturn();
 
-			return dm.CreateDelegate();
+			return dm.CreateDelegate<FullyWrappedMethod>();
 		}
 
 #if DISKSAVING
