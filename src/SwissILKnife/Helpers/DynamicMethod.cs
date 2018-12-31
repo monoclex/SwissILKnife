@@ -8,27 +8,25 @@ namespace SwissILKnife
 	public class DynamicMethod<T>
 		where T : Delegate
 	{
-		public EmitDynamicMethod EmitDynamicMethod { get; set; }
-
-		public ILGenerator ILGenerator { get; set; }
-
-		public Delegate CreateDelegate(Type delegateType)
-			=> EmitDynamicMethod.CreateDelegate(delegateType);
-
-		public Delegate CreateDelegate(Type delegateType, object target)
-			=> EmitDynamicMethod.CreateDelegate(delegateType, target);
-
 		private static readonly Type _type = typeof(T);
 
-		public T CreateDelegate()
-			=> (T)CreateDelegate(_type);
+		public EmitDynamicMethod InnerDynamicMethod { get; set; }
 
-		private DynamicMethod(EmitDynamicMethod dynMethod)
-		{
-			EmitDynamicMethod = dynMethod;
-			ILGenerator = dynMethod.GetILGenerator();
-		}
+		public DynamicMethod(EmitDynamicMethod dynMethod) => InnerDynamicMethod = dynMethod;
 
+		public DynamicMethod(Type[] parameterTypes) : this(string.Empty, typeof(void), parameterTypes) { }
+		public DynamicMethod(Type returnType, Type[] parameterTypes) : this(string.Empty, returnType, parameterTypes) { }
+
+		public ILGenerator GetILGenerator() => InnerDynamicMethod.GetILGenerator();
+		public ILGenerator GetILGenerator(int streamSize) => InnerDynamicMethod.GetILGenerator(streamSize);
+
+		public T CreateDelegate() => (T)CreateDelegate(_type);
+		public T CreateDelegate(object target) => (T)CreateDelegate(_type, target);
+
+		public Delegate CreateDelegate(Type delegateType) => InnerDynamicMethod.CreateDelegate(delegateType);
+		public Delegate CreateDelegate(Type delegateType, object target) => InnerDynamicMethod.CreateDelegate(delegateType, target);
+
+		#region ctor noise
 		public DynamicMethod(string name, Type returnType, Type[] parameterTypes)
 			: this(new EmitDynamicMethod(name, returnType, parameterTypes)) { }
 
@@ -52,14 +50,15 @@ namespace SwissILKnife
 
 		public DynamicMethod(string name, MethodAttributes attributes, CallingConventions callingConvention, Type returnType, Type[] parameterTypes, Type owner, bool skipVisibility)
 			: this(new EmitDynamicMethod(name, attributes, callingConvention, returnType, parameterTypes, owner, skipVisibility)) { }
+		#endregion
 	}
 
-	internal static class DynamicMethodExtensions
+	public static class DynamicMethodExtensions
 	{
 		public static DynamicMethod<T> GetILGenerator<T>(this DynamicMethod<T> dyn, out ILGenerator ilGen)
 			where T : Delegate
 		{
-			ilGen = dyn.ILGenerator;
+			ilGen = dyn.GetILGenerator();
 			return dyn;
 		}
 	}

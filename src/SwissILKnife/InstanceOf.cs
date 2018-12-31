@@ -11,6 +11,8 @@ namespace SwissILKnife
 	/// <typeparam name="T">The type of object to be creating</typeparam>
 	public static class InstanceOf<T>
 	{
+		private static readonly Func<T> _constructor;
+
 		static InstanceOf()
 		{
 			var dm = new DynamicMethod<Func<T>>(string.Empty, typeof(T), Types.NoObjects, true)
@@ -21,8 +23,6 @@ namespace SwissILKnife
 
 			_constructor = dm.CreateDelegate();
 		}
-
-		private static readonly Func<T> _constructor;
 
 		/// <summary>
 		/// Create an instance of <typeparamref name="T"/>.
@@ -37,8 +37,7 @@ namespace SwissILKnife
 		/// </code></example>
 		/// <typeparam name="T"></typeparam>
 		/// <seealso cref="InstanceOf"/>
-		public static T Create()
-			=> _constructor();
+		public static T Create() => _constructor();
 	}
 
 	/// <summary>
@@ -70,6 +69,7 @@ namespace SwissILKnife
 			return dm.CreateDelegate();
 		}
 
-		public static void EmitILCreateNewObject(this ILGenerator il, Type objType) => il.EmitNewObject(objType.GetConstructor(Type.EmptyTypes));
+		public static void EmitILCreateNewObject(this ILGenerator il, Type objType)
+			=> il.EmitNewObject(objType.GetConstructor(Type.EmptyTypes));
 	}
 }

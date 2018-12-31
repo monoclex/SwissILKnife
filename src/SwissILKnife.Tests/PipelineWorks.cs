@@ -20,9 +20,9 @@ namespace SwissILKnife.Tests
 			pipeline.Emit(OpCodes.Ldstr, "test");
 			pipeline.Emit(OpCodes.Ret);
 
-			(dyn1.CreateDelegate())()
+			(dyn1.CreateDelegate()).Invoke()
 				.Should()
-				.Be((dyn2.CreateDelegate())());
+				.Be((dyn2.CreateDelegate()).Invoke());
 		}
 	}
 }

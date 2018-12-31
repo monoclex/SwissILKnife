@@ -1,8 +1,4 @@
-﻿#if DEBUG && (NET45 || NET472)
-#define DISKSAVING
-#endif
-
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace SwissILKnife
 {
