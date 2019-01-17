@@ -127,14 +127,14 @@ namespace SwissILKnife
 		public override void Emit(OpCode opcode, string str)
 			=> _all.All((ilgen) => ilgen.Emit(opcode, str));
 
-		public override void Emit(OpCode opcode, ConstructorInfo con) => _all.All((ilgen)
-			=> ilgen.Emit(opcode, con));
+		public override void Emit(OpCode opcode, ConstructorInfo con)
+			=> _all.All((ilgen) => ilgen.Emit(opcode, con));
 
-		public override void Emit(OpCode opcode, FieldInfo field) => _all.All((ilgen)
-			=> ilgen.Emit(opcode, field));
+		public override void Emit(OpCode opcode, FieldInfo field)
+			=> _all.All((ilgen) => ilgen.Emit(opcode, field));
 
-		public override void Emit(OpCode opcode, MethodInfo meth) => _all.All((ilgen)
-			=> ilgen.Emit(opcode, meth));
+		public override void Emit(OpCode opcode, MethodInfo meth)
+			=> _all.All((ilgen) => ilgen.Emit(opcode, meth));
 
 		public override void Emit(OpCode opcode, Type cls) => _all.All((ilgen)
 			=> ilgen.Emit(opcode, cls));
