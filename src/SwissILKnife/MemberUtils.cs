@@ -73,6 +73,12 @@ namespace SwissILKnife
 				loadScope();
 			}
 
+			// if a valuetype is passed in as an object, we need to unbox it first
+			if (property.DeclaringType.IsValueType)
+			{
+				il.EmitUnbox(property.DeclaringType);
+			}
+
 			il.EmitCallDirect(property.GetMethod);
 
 			if (property.PropertyType.IsValueType)
@@ -83,14 +89,23 @@ namespace SwissILKnife
 
 		public static void EmitGetMethod(this ILGenerator il, FieldInfo field, Action loadScope)
 		{
+			if (!field.IsStatic)
+			{
+				loadScope();
+			}
+
+			// if a valuetype is passed in as an object, we need to unbox it first
+			if (field.DeclaringType.IsValueType)
+			{
+				il.EmitUnbox(field.DeclaringType);
+			}
+
 			if (field.IsStatic)
 			{
 				il.EmitLoadStaticField(field);
 			}
 			else
 			{
-				loadScope();
-
 				il.EmitLoadField(field);
 			}
 

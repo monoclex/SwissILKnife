@@ -36,6 +36,10 @@ namespace MiniStrictEmit
 			=> il.Emit(OpCodes.Box, type);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void EmitUnbox(this ILGenerator il, Type type)
+			=> il.Emit(OpCodes.Unbox, type);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void EmitUnboxAny(this ILGenerator il, Type type)
 			=> il.Emit(OpCodes.Unbox_Any, type);
 
