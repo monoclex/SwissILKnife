@@ -1,16 +1,7 @@
-﻿using System.Reflection;
-using Xunit;
+﻿using Xunit;
 
 namespace SwissILKnife.Tests.Getters
 {
-	public partial class ReferenceType
-	{
-		public static FieldInfo PropertyInfo_Static_ValueType_Field
-			=> Field(nameof(Static_ValueType_Field), BindingFlags.Public | BindingFlags.Static);
-
-		public static int Static_ValueType_Field;
-	}
-
 	public partial class ReferenceTypeTests
 	{
 		[Fact]

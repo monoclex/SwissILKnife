@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using Xunit;
+﻿using Xunit;
 
 namespace SwissILKnife.Tests.Getters
 {
-	public partial struct ValueType
-	{
-		public static FieldInfo PropertyInfo_Instance_ReferenceType_Field
-			=> Field(nameof(Instance_ReferenceType_Field), BindingFlags.Public | BindingFlags.Instance);
-
-		public string Instance_ReferenceType_Field;
-	}
-
 	public partial class ValueTypeTests
 	{
 		[Fact]
