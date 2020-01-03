@@ -16,7 +16,7 @@ namespace SwissILKnife
 
 		static InstanceOf()
 		{
-			var dm = new DynamicMethod(string.Empty, typeof(T), Types.NoObjects, true)
+			var dm = new DynamicMethod(string.Empty, typeof(T), Type.EmptyTypes, true)
 						.GetILGenerator(out var il);
 
 			il.EmitNewObject<T>();
@@ -61,7 +61,7 @@ namespace SwissILKnife
 		/// </code></example>
 		public static Func<object> GetCreator(Type objType)
 		{
-			var dm = new DynamicMethod(string.Empty, objType, Types.NoObjects, true)
+			var dm = new DynamicMethod(string.Empty, objType, Type.EmptyTypes, true)
 						.GetILGenerator(out var il);
 
 			il.EmitNewObject(objType.GetConstructor(Type.EmptyTypes));
