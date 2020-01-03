@@ -2,15 +2,15 @@
 
 namespace SwissILKnife.Tests
 {
-	public class SampleClass
-	{
-		public SampleClass() => Test = "test";
-
-		public string Test { get; set; }
-	}
-
 	public class CreatesInstances
 	{
+		public class SampleClass
+		{
+			public SampleClass() => Test = "test";
+
+			public string Test { get; set; }
+		}
+
 		[Fact]
 		public void InstanceOfGeneric()
 		{
