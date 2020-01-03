@@ -74,7 +74,7 @@ namespace SwissILKnife
 			}
 
 			// if a valuetype is passed in as an object, we need to unbox it first
-			if (property.DeclaringType.IsValueType)
+			if (property.DeclaringType.IsValueType && !property.SetMethod.IsStatic)
 			{
 				il.EmitUnbox(property.DeclaringType);
 			}
@@ -95,7 +95,7 @@ namespace SwissILKnife
 			}
 
 			// if a valuetype is passed in as an object, we need to unbox it first
-			if (field.DeclaringType.IsValueType)
+			if (field.DeclaringType.IsValueType && !field.IsStatic)
 			{
 				il.EmitUnbox(field.DeclaringType);
 			}
