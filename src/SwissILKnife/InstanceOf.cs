@@ -2,6 +2,7 @@
 
 using System;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
 namespace SwissILKnife
 {
@@ -12,7 +13,10 @@ namespace SwissILKnife
 	/// <typeparam name="T">The type of object to be creating</typeparam>
 	public static class InstanceOf<T>
 	{
-		private static readonly Func<T> _constructor;
+		/// <summary>
+		/// A method generated with IL that news up an instance of T faster than Activator.CreateInstance.
+		/// </summary>
+		public static readonly Func<T> New;
 
 		static InstanceOf()
 		{
@@ -22,7 +26,7 @@ namespace SwissILKnife
 			il.EmitNewObject<T>();
 			il.EmitReturn();
 
-			_constructor = dm.CreateDelegate<Func<T>>();
+			New = dm.CreateDelegate<Func<T>>();
 		}
 
 		/// <summary>
@@ -38,7 +42,9 @@ namespace SwissILKnife
 		/// </code></example>
 		/// <typeparam name="T"></typeparam>
 		/// <seealso cref="InstanceOf"/>
-		public static T Create() => _constructor();
+		[Obsolete("Please use 'New'.")]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static T Create() => New();
 	}
 
 	/// <summary>
